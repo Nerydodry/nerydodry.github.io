@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>App de Música</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#121212;
+color:white;
+text-align:center;
+}
+
+.playlist{
+background:#1db954;
+color:black;
+margin:20px auto;
+width:320px;
+border-radius:12px;
+cursor:pointer;
+padding:15px;
+transition:0.3s;
+}
+
+.playlist:hover{
+transform:scale(1.05);
+}
+
+.musicas{
+display:none;
+background:#1e1e1e;
+border-radius:0 0 12px 12px;
+padding:10px;
+}
+
+.musicas li{
+list-style:none;
+padding:8px;
+border-bottom:1px solid #333;
+}
+
+.musicas a{
+color:white;
+text-decoration:none;
+}
+
+.musicas a:hover{
+color:#1db954;
+}
+
+</style>
+
+<script>
+
+function abrirPlaylist(id){
+
+let lista = document.getElementById(id);
+
+if(lista.style.display === "block"){
+lista.style.display = "none";
+}else{
+lista.style.display = "block";
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h1>🎧 Meu App de Música</h1>
+
+<div class="playlist" onclick="abrirPlaylist('rock')">
+<h2>🎸 Playlist Rock</h2>
+
+<ul id="rock" class="musicas">
+
+<li>
+<a href="https://youtu.be/hTWKbfoikeg" target="_blank">
+Nirvana - Smells Like Teen Spirit
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/kXYiU_JCYtU" target="_blank">
+Linkin Park - Numb
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/bpOSxM0rNPM" target="_blank">
+Arctic Monkeys - Do I Wanna Know
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<div class="playlist" onclick="abrirPlaylist('rap')">
+<h2>🔥 Playlist Rap</h2>
+
+<ul id="rap" class="musicas">
+
+<li>
+<a href="https://youtu.be/_Yhyp-_hX2s" target="_blank">
+Eminem - Lose Yourself
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/xpVfcZ0ZcFM" target="_blank">
+Drake - God's Plan
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/Dst9gZkq1a8" target="_blank">
+Travis Scott - Goosebumps
+</a>
+</li>
+
+</ul>
+
+</div>
+
+</body>
+</html>

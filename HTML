@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>App de Música</title>
+
+<script>
+
+function abrirPlaylist(id){
+
+let lista = document.getElementById(id);
+
+if(lista.style.display === "block"){
+lista.style.display = "none";
+}else{
+lista.style.display = "block";
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h1>🎧 Meu App de Música</h1>
+
+<div class="playlist" onclick="abrirPlaylist('rock')">
+<h2>🎸 Playlist Rock</h2>
+
+<ul id="rock" class="musicas">
+
+<li>
+<a href="https://youtu.be/hTWKbfoikeg" target="_blank">
+Nirvana - Smells Like Teen Spirit
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/kXYiU_JCYtU" target="_blank">
+Linkin Park - Numb
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/bpOSxM0rNPM" target="_blank">
+Arctic Monkeys - Do I Wanna Know
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<div class="playlist" onclick="abrirPlaylist('rap')">
+<h2>🔥 Playlist Rap</h2>
+
+<ul id="rap" class="musicas">
+
+<li>
+<a href="https://youtu.be/_Yhyp-_hX2s" target="_blank">
+Eminem - Lose Yourself
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/xpVfcZ0ZcFM" target="_blank">
+Drake - God's Plan
+</a>
+</li>
+
+<li>
+<a href="https://youtu.be/Dst9gZkq1a8" target="_blank">
+Travis Scott - Goosebumps
+</a>
+</li>
+
+</ul>
+
+</div>
+
+</body>
+</html>

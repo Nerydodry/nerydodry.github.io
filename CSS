@@ -1,0 +1,45 @@
+<style>
+
+body{
+font-family: Arial;
+background:#121212;
+color:white;
+text-align:center;
+}
+
+.playlist{
+background:#1db954;
+color:black;
+margin:20px auto;
+width:320px;
+border-radius:12px;
+cursor:pointer;
+padding:15px;
+transition:0.3s;
+}
+
+.playlist:hover{
+transform:scale(1.05);
+}
+
+.musicas{
+display:none;
+background:#1e1e1e;
+border-radius:0 0 12px 12px;
+padding:10px;
+}
+
+.musicas li{
+list-style:none;
+padding:8px;
+border-bottom:1px solid #333;
+}
+
+.musicas a{
+color:white;
+text-decoration:none;
+}
+
+.musicas a:hover{
+color:#1db954;
+}
