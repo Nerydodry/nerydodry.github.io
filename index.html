@@ -7,47 +7,63 @@
 <style>
 
 body{
-font-family: Arial;
-background:#121212;
-color:white;
-text-align:center;
+    font-family: Arial;
+    background:#121212;
+    color:white;
+    text-align:center;
 }
 
+/* CONTAINER PRINCIPAL */
+.container{
+    width:350px;
+    margin:auto;
+}
+
+/* PLAYER */
+.player{
+    margin-bottom:20px;
+}
+
+/* PLAYLIST */
 .playlist{
-background:#1db954;
-color:black;
-margin:20px auto;
-width:320px;
-border-radius:12px;
-cursor:pointer;
-padding:15px;
-transition:0.3s;
+    background:#1db954;
+    color:black;
+    margin:20px 0;
+    border-radius:12px;
+    cursor:pointer;
+    padding:15px;
+    transition:0.3s;
 }
 
 .playlist:hover{
-transform:scale(1.05);
+    transform:scale(1.05);
 }
 
-.musicas{
-display:none;
-background:#1e1e1e;
-border-radius:0 0 12px 12px;
-padding:10px;
+/* TABELA */
+table{
+    width:100%;
+    background:#1e1e1e;
+    border-radius:0 0 12px 12px;
+    display:none;
 }
 
-.musicas li{
-list-style:none;
-padding:8px;
-border-bottom:1px solid #333;
+td{
+    padding:10px;
+    border-bottom:1px solid #333;
 }
 
-.musicas a{
-color:white;
-text-decoration:none;
+/* BOTÃO */
+button{
+    background:#1db954;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
-.musicas a:hover{
-color:#1db954;
+button:hover{
+    background:#17a74a;
 }
 
 </style>
@@ -55,15 +71,18 @@ color:#1db954;
 <script>
 
 function abrirPlaylist(id){
+    let tabela = document.getElementById(id);
 
-let lista = document.getElementById(id);
-
-if(lista.style.display === "block"){
-lista.style.display = "none";
-}else{
-lista.style.display = "block";
+    if(tabela.style.display === "table"){
+        tabela.style.display = "none";
+    }else{
+        tabela.style.display = "table";
+    }
 }
 
+function tocar(videoId){
+    let player = document.getElementById("player");
+    player.src = "https://www.youtube.com/embed/" + videoId;
 }
 
 </script>
@@ -72,59 +91,60 @@ lista.style.display = "block";
 
 <body>
 
+<div class="container">
+
 <h1>🎧 Meu App de Música</h1>
 
-<div class="playlist" onclick="abrirPlaylist('rock')">
-<h2>🎸 Playlist Rock</h2>
-
-<ul id="rock" class="musicas">
-
-<li>
-<a href="https://youtu.be/hTWKbfoikeg" target="_blank">
-Nirvana - Smells Like Teen Spirit
-</a>
-</li>
-
-<li>
-<a href="https://youtu.be/kXYiU_JCYtU" target="_blank">
-Linkin Park - Numb
-</a>
-</li>
-
-<li>
-<a href="https://youtu.be/bpOSxM0rNPM" target="_blank">
-Arctic Monkeys - Do I Wanna Know
-</a>
-</li>
-
-</ul>
-
+<!-- PLAYER -->
+<div class="player">
+<iframe id="player" width="100%" height="180" 
+style="border-radius:12px;" src="" allowfullscreen>
+</iframe>
 </div>
 
+<!-- PLAYLIST ROCK -->
+<div class="playlist" onclick="abrirPlaylist('rock')">
+<h2>🎸 Playlist Rock</h2>
+</div>
+
+<table id="rock">
+<tr>
+<td>Nirvana - Smells Like Teen Spirit</td>
+<td><button onclick="tocar('hTWKbfoikeg')">▶ Tocar</button></td>
+</tr>
+
+<tr>
+<td>Linkin Park - Numb</td>
+<td><button onclick="tocar('kXYiU_JCYtU')">▶ Tocar</button></td>
+</tr>
+
+<tr>
+<td>Arctic Monkeys - Do I Wanna Know</td>
+<td><button onclick="tocar('bpOSxM0rNPM')">▶ Tocar</button></td>
+</tr>
+</table>
+
+<!-- PLAYLIST RAP -->
 <div class="playlist" onclick="abrirPlaylist('rap')">
 <h2>🔥 Playlist Rap</h2>
+</div>
 
-<ul id="rap" class="musicas">
+<table id="rap">
+<tr>
+<td>Eminem - Lose Yourself</td>
+<td><button onclick="tocar('_Yhyp-_hX2s')">▶ Tocar</button></td>
+</tr>
 
-<li>
-<a href="https://youtu.be/_Yhyp-_hX2s" target="_blank">
-Eminem - Lose Yourself
-</a>
-</li>
+<tr>
+<td>Drake - God's Plan</td>
+<td><button onclick="tocar('xpVfcZ0ZcFM')">▶ Tocar</button></td>
+</tr>
 
-<li>
-<a href="https://youtu.be/xpVfcZ0ZcFM" target="_blank">
-Drake - God's Plan
-</a>
-</li>
-
-<li>
-<a href="https://youtu.be/Dst9gZkq1a8" target="_blank">
-Travis Scott - Goosebumps
-</a>
-</li>
-
-</ul>
+<tr>
+<td>Travis Scott - Goosebumps</td>
+<td><button onclick="tocar('Dst9gZkq1a8')">▶ Tocar</button></td>
+</tr>
+</table>
 
 </div>
 
