@@ -88,6 +88,29 @@ const API = {
     return this.requisitar(`/api/denuncias/${id}/apoio`, { method: 'POST' });
   },
 
+  comentariosDenuncia(id) {
+    return this.requisitar(`/api/denuncias/${id}/comentarios`);
+  },
+
+  comentar(id, texto) {
+    return this.requisitar(`/api/denuncias/${id}/comentarios`, {
+      method: 'POST',
+      body: { texto }
+    });
+  },
+
+  detalheDenuncia(id) {
+    return this.requisitar(`/api/denuncias/${id}`);
+  },
+
+  listarNoticias(filtros = {}) {
+    const parametros = new URLSearchParams(
+      Object.entries(filtros).filter(([, valor]) => valor)
+    );
+    const query = parametros.toString();
+    return this.requisitar(`/api/noticias${query ? `?${query}` : ''}`);
+  },
+
   meuPerfil() {
     return this.requisitar('/api/usuarios/eu');
   },

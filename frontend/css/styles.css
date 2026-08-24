@@ -569,6 +569,140 @@ textarea {
   margin-bottom: 6px;
 }
 
+/* ---------- Feed clicável ---------- */
+
+#listaDenuncias .card {
+  cursor: pointer;
+}
+
+.rodape-acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contador-comentarios {
+  font-weight: bold;
+}
+
+/* ---------- Notícias locais ---------- */
+
+.noticia {
+  padding: 0;
+  overflow: hidden;
+}
+
+.noticia-imagem,
+.noticia-capa {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 15px;
+  color: var(--branco);
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.noticia-capa {
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+}
+
+.noticia-capa.categoria-obras { background: linear-gradient(135deg, #e65100, #fb8c00); }
+.noticia-capa.categoria-saude { background: linear-gradient(135deg, #ad1457, #ec407a); }
+.noticia-capa.categoria-eventos { background: linear-gradient(135deg, #4527a0, #7e57c2); }
+.noticia-capa.categoria-mobilidade { background: linear-gradient(135deg, #00695c, #26a69a); }
+.noticia-capa.categoria-cidade { background: linear-gradient(135deg, #283593, #5c6bc0); }
+
+.noticia-corpo {
+  padding: 14px 15px 12px;
+}
+
+.noticia h4 {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.noticia .resumo {
+  color: var(--cinza);
+}
+
+.noticia-conteudo {
+  margin-top: 6px;
+}
+
+.ler-mais {
+  color: var(--verde-medio);
+  font-weight: bold;
+  font-size: 13px;
+  padding: 6px 0 0;
+}
+
+/* ---------- Detalhe da denúncia ---------- */
+
+.botao-voltar {
+  background: var(--branco);
+  border: 1px solid #cfe0d2;
+  color: var(--verde-escuro);
+  font-weight: bold;
+  padding: 9px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.detalhe-foto {
+  height: 230px !important;
+}
+
+.detalhe-meta {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--cinza);
+}
+
+.detalhe-acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.detalhe-acoes .mudar-status {
+  width: auto;
+  flex: 1;
+}
+
+.mapa {
+  width: 100%;
+  height: 220px;
+  border: none;
+  border-radius: 15px;
+  box-shadow: var(--sombra);
+  display: block;
+}
+
+.link-mapa {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--verde-escuro);
+  font-weight: bold;
+}
+
+.sem-mapa {
+  color: var(--cinza);
+  font-size: 14px;
+}
+
+.discussao {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+}
+
 /* ---------- Menu inferior ---------- */
 
 .menu {

@@ -19,6 +19,8 @@ Authorization: Bearer <token>
 - [Autenticação](#autenticação)
 - [Usuários](#usuários)
 - [Denúncias](#denúncias)
+- [Comentários da denúncia](#comentários-da-denúncia)
+- [Notícias locais](#notícias-locais)
 - [Chat da comunidade](#chat-da-comunidade)
 - [Eventos em tempo real (Socket.IO)](#eventos-em-tempo-real-socketio)
 - [Códigos de erro](#códigos-de-erro)
@@ -228,6 +230,88 @@ Alterna o apoio ("👍") do usuário autenticado na denúncia.
 
 ---
 
+## Comentários da denúncia
+
+Cada denúncia possui um tópico de discussão onde os usuários conversam sobre aquele problema específico.
+
+### `GET /api/denuncias/:id/comentarios`
+
+Lista todos os comentários da denúncia, do mais antigo ao mais recente.
+
+**Resposta `200 OK`:**
+
+```json
+[
+  {
+    "id": 1,
+    "denunciaId": 1,
+    "usuarioId": 2,
+    "nome": "João Pereira",
+    "texto": "Passei lá hoje e continua igual. Vamos pressionar a coleta! 💪",
+    "criadoEm": "2026-08-22T14:00:00.000Z"
+  }
+]
+```
+
+### `POST /api/denuncias/:id/comentarios` 🔒
+
+Cria um comentário na discussão da denúncia. O comentário é transmitido em tempo real para todos via Socket.IO (evento `denuncia:novo-comentario`).
+
+**Corpo:** `{ "texto": "mensagem de até 500 caracteres" }`
+
+```bash
+curl -X POST http://localhost:3000/api/denuncias/1/comentarios \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"texto":"Confirmei, está igual!"}'
+```
+
+**Resposta `201 Created`:** objeto do comentário criado (como no GET acima).
+
+---
+
+## Notícias locais
+
+Mural de notícias da cidade exibido na aba **📰 Notícias**.
+
+Categorias aceitas: `meio_ambiente`, `obras`, `saude`, `eventos`, `mobilidade`, `cidade`.
+
+### `GET /api/noticias`
+
+Lista notícias, mais recentes primeiro.
+
+**Parâmetros de consulta (opcionais):**
+
+| Parâmetro   | Descrição                                   |
+| ----------- | ------------------------------------------- |
+| `categoria` | filtra por categoria                        |
+| `busca`     | busca textual em título e resumo            |
+| `limite`    | quantidade máxima (padrão 50, máximo 100)   |
+
+**Resposta `200 OK`:**
+
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Prefeitura inicia plantio de 500 mudas nos bairros",
+    "resumo": "Projeto \"Cidade Verde\" vai arborizar avenidas e praças.",
+    "conteudo": "A prefeitura anunciou o início do plantio…",
+    "categoria": "meio_ambiente",
+    "categoriaRotulo": "Meio ambiente",
+    "fonte": "Prefeitura Municipal",
+    "imagem": null,
+    "criadoEm": "2026-08-23T12:00:00.000Z"
+  }
+]
+```
+
+### `GET /api/noticias/:id`
+
+Detalhe de uma notícia.
+
+---
+
 ## Chat da comunidade
 
 ### `GET /api/chat/mensagens`
@@ -271,10 +355,11 @@ const socket = io("http://localhost:3000", {
 });
 ```
 
-| Evento          | Direção         | Payload                  |
-| --------------- | --------------- | ------------------------ |
-| `chat:mensagem` | cliente → server| `{ texto: "..." }`       |
-| `chat:nova`     | server → todos  | mensagem criada (igual à resposta REST) |
+| Evento                     | Direção          | Payload                  |
+| -------------------------- | ---------------- | ------------------------ |
+| `chat:mensagem`            | cliente → server | `{ texto: "..." }`       |
+| `chat:nova`                | server → todos   | mensagem criada (igual à resposta REST) |
+| `denuncia:novo-comentario` | server → todos   | comentário criado em uma denúncia `{ id, denunciaId, usuarioId, nome, texto, criadoEm }` |
 
 ---
 

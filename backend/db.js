@@ -7,7 +7,9 @@ const DB_PATH = path.join(DATA_DIR, 'db.json');
 const ESTRUTURA_INICIAL = {
   usuarios: [],
   denuncias: [],
-  mensagens: []
+  mensagens: [],
+  noticias: [],
+  comentarios: []
 };
 
 let banco = null;

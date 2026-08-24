@@ -13,12 +13,22 @@ const STATUS = {
   resolvida: 'Resolvida'
 };
 
+const CATEGORIAS_NOTICIA = {
+  meio_ambiente: '🌍 Meio ambiente',
+  obras: '🏗️ Obras',
+  saude: '🏥 Saúde',
+  eventos: '🎉 Eventos',
+  mobilidade: '🚌 Mobilidade',
+  cidade: '🏙️ Cidade'
+};
+
 const $conteudo = document.getElementById('conteudo');
 const $telaAuth = document.getElementById('autenticacao');
 const $aplicativo = document.getElementById('aplicativo');
 
 let socket = null;
 let filtroTipoAtual = '';
+let filtroCategoriaAtual = '';
 
 /* ---------- Utilidades ---------- */
 
@@ -140,18 +150,31 @@ function configurarFormulariosAuth() {
 const ROTAS = {
   '#/inicio': telaInicio,
   '#/denunciar': telaDenunciar,
+  '#/noticias': telaNoticias,
   '#/chat': telaChat,
   '#/perfil': telaPerfil
 };
 
 async function navegar(rota) {
-  if (!ROTAS[rota]) rota = '#/inicio';
+  let acao = ROTAS[rota];
+
+  if (!acao && rota.startsWith('#/denuncia/')) {
+    const id = Number(rota.split('/')[2]);
+    if (Number.isInteger(id) && id > 0) {
+      acao = () => telaDenuncia(id);
+    }
+  }
+
+  if (!acao) {
+    rota = '#/inicio';
+    acao = telaInicio;
+  }
 
   document.querySelectorAll('.menu button').forEach((botao) => {
     botao.classList.toggle('ativo', botao.dataset.rota === rota);
   });
 
-  await ROTAS[rota]();
+  await acao();
 }
 
 document.querySelectorAll('.menu button').forEach((botao) => {
@@ -235,7 +258,10 @@ function cartaoDenuncia(denuncia) {
       ${foto}
       <div class="card-rodape">
         <span>por ${escapar(denuncia.autor?.nome || '?')} · ${dataCurta(denuncia.criadoEm)}</span>
-        <button class="apoiar${apoiado ? ' ativo' : ''}" type="button">👍 ${denuncia.apoios.length}</button>
+        <span class="rodape-acoes">
+          <span class="contador-comentarios">💬 ${denuncia.comentarios || 0}</span>
+          <button class="apoiar${apoiado ? ' ativo' : ''}" type="button">👍 ${denuncia.apoios.length}</button>
+        </span>
       </div>
       ${
         podeMudarStatus
@@ -264,7 +290,12 @@ function renderizarDenuncias(denuncias) {
   $lista.querySelectorAll('.card').forEach((cartao) => {
     const id = Number(cartao.dataset.id);
 
+    cartao.addEventListener('click', () => {
+      location.hash = `#/denuncia/${id}`;
+    });
+
     cartao.querySelector('.apoiar')?.addEventListener('click', async (evento) => {
+      evento.stopPropagation();
       const botao = evento.currentTarget;
       try {
         const resposta = await API.apoiar(id);
@@ -275,7 +306,12 @@ function renderizarDenuncias(denuncias) {
       }
     });
 
+    cartao.querySelector('.mudar-status')?.addEventListener('click', (evento) => {
+      evento.stopPropagation();
+    });
+
     cartao.querySelector('.mudar-status')?.addEventListener('change', async (evento) => {
+      evento.stopPropagation();
       const novoStatus = evento.target.value;
       if (!novoStatus) return;
       try {
@@ -286,6 +322,252 @@ function renderizarDenuncias(denuncias) {
       }
     });
   });
+}
+
+/* ---------- Tela: Notícias locais ---------- */
+
+async function telaNoticias() {
+  $conteudo.innerHTML = `
+    <h3 class="secao-titulo">📰 Notícias da cidade</h3>
+    <div class="filtros" id="filtrosNoticia"></div>
+    <div id="listaNoticias"><p class="aviso-carregando">Carregando…</p></div>
+  `;
+
+  const $filtros = document.getElementById('filtrosNoticia');
+  const filtros = [['', 'Todas'], ...Object.entries(CATEGORIAS_NOTICIA).map(([chave, rotulo]) => [chave, rotulo])];
+
+  filtros.forEach(([chave, rotulo]) => {
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = `filtro${chave === filtroCategoriaAtual ? ' ativo' : ''}`;
+    botao.textContent = rotulo;
+    botao.addEventListener('click', () => {
+      filtroCategoriaAtual = chave;
+      telaNoticias();
+    });
+    $filtros.appendChild(botao);
+  });
+
+  try {
+    const noticias = await API.listarNoticias(
+      filtroCategoriaAtual ? { categoria: filtroCategoriaAtual } : {}
+    );
+    renderizarNoticias(noticias);
+  } catch {
+    document.getElementById('listaNoticias').innerHTML =
+      '<p class="vazio">Não foi possível carregar as notícias.</p>';
+  }
+}
+
+function cartaoNoticia(noticia) {
+  return `
+    <article class="card noticia">
+      ${
+        noticia.imagem
+          ? `<img class="noticia-imagem" src="${escapar(noticia.imagem)}" alt="Imagem da notícia">`
+          : `<div class="noticia-capa categoria-${escapar(noticia.categoria)}">${escapar(noticia.categoriaRotulo)}</div>`
+      }
+      <div class="noticia-corpo">
+        <span class="etiqueta">${escapar(noticia.categoriaRotulo)}</span>
+        <h4>${escapar(noticia.titulo)}</h4>
+        <p class="resumo">${escapar(noticia.resumo)}</p>
+        <p class="noticia-conteudo oculto">${escapar(noticia.conteudo)}</p>
+        <button class="ler-mais" type="button">Ler mais ▾</button>
+        <div class="card-rodape">
+          <span>📢 ${escapar(noticia.fonte || 'Redação CidadeViva')}</span>
+          <span>${dataCurta(noticia.criadoEm)}</span>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderizarNoticias(noticias) {
+  const $lista = document.getElementById('listaNoticias');
+
+  if (!noticias.length) {
+    $lista.innerHTML = '<p class="vazio">Nenhuma notícia publicada ainda.</p>';
+    return;
+  }
+
+  $lista.innerHTML = noticias.map(cartaoNoticia).join('');
+
+  $lista.querySelectorAll('.noticia').forEach((cartao) => {
+    const botao = cartao.querySelector('.ler-mais');
+    const conteudo = cartao.querySelector('.noticia-conteudo');
+
+    botao.addEventListener('click', () => {
+      const aberto = !conteudo.classList.contains('oculto');
+      conteudo.classList.toggle('oculto', aberto);
+      botao.textContent = aberto ? 'Ler mais ▾' : 'Mostrar menos ▴';
+    });
+  });
+}
+
+/* ---------- Tela: Denúncia (detalhe + discussão) ---------- */
+
+async function telaDenuncia(id) {
+  let denuncia;
+
+  try {
+    denuncia = await API.detalheDenuncia(id);
+  } catch (erro) {
+    $conteudo.innerHTML =
+      erro.status === 404
+        ? '<p class="vazio">Denúncia não encontrada. <a href="#/inicio">Voltar ao início</a></p>'
+        : '<p class="vazio">Erro ao carregar a denúncia.</p>';
+    return;
+  }
+
+  const tipo = TIPOS[denuncia.tipo] || TIPOS.outro;
+  const apoiado = denuncia.apoios.includes(API.usuario?.id);
+  const podeMudarStatus = denuncia.usuarioId === API.usuario?.id && denuncia.status !== 'resolvida';
+  const temMapa = Number.isFinite(denuncia.latitude) && Number.isFinite(denuncia.longitude);
+
+  const mapa = temMapa
+    ? (() => {
+        const lat = denuncia.latitude;
+        const lng = denuncia.longitude;
+        const bbox = `${lng - 0.004}%2C${lat - 0.002}%2C${lng + 0.004}%2C${lat + 0.002}`;
+        return `
+          <iframe
+            class="mapa"
+            title="Mapa da denúncia"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}">
+          </iframe>
+          <a
+            class="link-mapa"
+            href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}"
+            target="_blank"
+            rel="noopener">📍 Ver no OpenStreetMap</a>
+        `;
+      })()
+    : '<p class="sem-mapa">📍 Esta denúncia não possui localização registrada.</p>';
+
+  $conteudo.innerHTML = `
+    <button class="botao-voltar" type="button">← Voltar</button>
+
+    <article class="card">
+      <div class="card-cabecalho">
+        <h4>${tipo.icone} ${escapar(denuncia.titulo)}</h4>
+        <span class="etiqueta ${denuncia.status}">${STATUS[denuncia.status]}</span>
+      </div>
+      <p>${escapar(denuncia.descricao)}</p>
+      ${denuncia.foto
+        ? `<img class="foto-denuncia detalhe-foto" src="${escapar(denuncia.foto)}" alt="Foto da denúncia">`
+        : `<div class="placeholder-foto">${tipo.icone}</div>`}
+      <p class="detalhe-meta">${tipo.rotulo} · por ${escapar(denuncia.autor?.nome || '?')} · ${dataCurta(denuncia.criadoEm)}</p>
+
+      <div class="detalhe-acoes">
+        <button class="apoiar${apoiado ? ' ativo' : ''}" id="botaoApoiar" type="button">👍 ${denuncia.apoios.length} apoios</button>
+        ${
+          podeMudarStatus
+            ? `<select class="mudar-status" id="selecionarStatus">
+                <option value="">Mudar status…</option>
+                <option value="em_analise">Marcar como em análise</option>
+                <option value="resolvida">Marcar como resolvida</option>
+              </select>`
+            : ''
+        }
+      </div>
+    </article>
+
+    <h3 class="secao-titulo">📍 Localização</h3>
+    ${mapa}
+
+    <h3 class="secao-titulo">💬 Discussão sobre o problema</h3>
+    <div class="chat-container">
+      <div class="chat-mensagens discussao" id="listaComentarios">
+        <p class="aviso-carregando">Carregando comentários…</p>
+      </div>
+    </div>
+    <form class="chat-form" id="formComentario">
+      <input type="text" id="campoComentario" placeholder="Opine, ajude, comente…" maxlength="500" autocomplete="off" required>
+      <button type="submit" title="Enviar">➤</button>
+    </form>
+  `;
+
+  document.querySelector('.botao-voltar').addEventListener('click', () => {
+    location.hash = '#/inicio';
+  });
+
+  document.getElementById('botaoApoiar').addEventListener('click', async (evento) => {
+    const botao = evento.currentTarget;
+    try {
+      const resposta = await API.apoiar(id);
+      botao.classList.toggle('ativo', resposta.apoiou);
+      botao.textContent = `👍 ${resposta.apoios} apoios`;
+    } catch (erro) {
+      alert(erro.message);
+    }
+  });
+
+  document.getElementById('selecionarStatus')?.addEventListener('change', async (evento) => {
+    if (!evento.target.value) return;
+    try {
+      await API.alterarStatus(id, evento.target.value);
+      telaDenuncia(id);
+    } catch (erro) {
+      alert(erro.message);
+    }
+  });
+
+  const $comentarios = document.getElementById('listaComentarios');
+
+  function comentarioHtml(comentario) {
+    const meu = comentario.usuarioId === API.usuario?.id;
+    return `
+      <div class="msg${meu ? ' minha' : ''}" data-id="${comentario.id}">
+        <span class="autor">${escapar(meu ? 'Você' : comentario.nome)}</span>
+        ${escapar(comentario.texto)}
+        <span class="hora">${horaCurta(comentario.criadoEm)}</span>
+      </div>
+    `;
+  }
+
+  function rolarParaOFim() {
+    $comentarios.scrollTop = $comentarios.scrollHeight;
+  }
+
+  try {
+    const comentarios = await API.comentariosDenuncia(id);
+    $comentarios.innerHTML = comentarios.length
+      ? comentarios.map(comentarioHtml).join('')
+      : '<p class="vazio">Ninguém comentou ainda. Inicie a conversa! 👇</p>';
+    rolarParaOFim();
+  } catch {
+    $comentarios.innerHTML = '<p class="vazio">Erro ao carregar os comentários.</p>';
+  }
+
+  document.getElementById('formComentario').addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+    const $campo = document.getElementById('campoComentario');
+    const texto = $campo.value.trim();
+    if (!texto) return;
+
+    try {
+      const comentario = await API.comentar(id, texto);
+      $campo.value = '';
+      if (!$comentarios.querySelector(`[data-id="${comentario.id}"]`)) {
+        $comentarios.querySelector('.vazio')?.remove();
+        $comentarios.insertAdjacentHTML('beforeend', comentarioHtml(comentario));
+        rolarParaOFim();
+      }
+    } catch (erro) {
+      alert(erro.message);
+    }
+  });
+
+  window._denunciaAoComentar = (comentario) => {
+    if (comentario.denunciaId !== id) return;
+    if ($comentarios.querySelector(`[data-id="${comentario.id}"]`)) return;
+    $comentarios.querySelector('.vazio')?.remove();
+    $comentarios.insertAdjacentHTML('beforeend', comentarioHtml(comentario));
+    rolarParaOFim();
+  };
+
+  socket?.off('denuncia:novo-comentario', window._denunciaAoComentar);
+  socket?.on('denuncia:novo-comentario', window._denunciaAoComentar);
 }
 
 /* ---------- Tela: Denunciar ---------- */

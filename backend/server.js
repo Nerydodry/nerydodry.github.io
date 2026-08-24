@@ -11,10 +11,13 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const { router: noticiaRoutes } = require('./routes/noticiaRoutes');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { maxHttpBufferSize: 1e6 });
+
+app.set('io', io);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
@@ -24,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', userRoutes);
 app.use('/api/denuncias', reportRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/noticias', noticiaRoutes);
 
 app.get('/api', (req, res) => {
   res.json({

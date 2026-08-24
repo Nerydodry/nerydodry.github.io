@@ -30,8 +30,15 @@ function denunciaPublica(denuncia) {
     ...denuncia,
     tipoRotulo: ROTULO_TIPOS[denuncia.tipo] || denuncia.tipo,
     statusRotulo: ROTULO_STATUS[denuncia.status] || denuncia.status,
-    autor: autor ? { id: autor.id, nome: autor.nome } : { id: null, nome: 'Usuário removido' }
+    autor: autor ? { id: autor.id, nome: autor.nome } : { id: null, nome: 'Usuário removido' },
+    comentarios: db
+      .get()
+      .comentarios.filter((c) => c.denunciaId === denuncia.id).length
   };
+}
+
+function comentarioPublico(comentario) {
+  return comentario;
 }
 
 router.post('/', autenticar, upload.single('foto'), (req, res) => {
@@ -160,6 +167,57 @@ router.post('/:id/apoio', autenticar, (req, res) => {
     apoios: denuncia.apoios.length,
     apoiou: indice < 0
   });
+});
+
+router.get('/:id/comentarios', (req, res) => {
+  const denuncia = db.get().denuncias.find((d) => d.id === Number(req.params.id));
+
+  if (!denuncia) {
+    return res.status(404).json({ erro: 'Denúncia não encontrada.' });
+  }
+
+  const lista = db
+    .get()
+    .comentarios.filter((c) => c.denunciaId === denuncia.id)
+    .sort((a, b) => a.id - b.id);
+
+  res.json(lista.map(comentarioPublico));
+});
+
+router.post('/:id/comentarios', autenticar, (req, res) => {
+  const denuncia = db.get().denuncias.find((d) => d.id === Number(req.params.id));
+
+  if (!denuncia) {
+    return res.status(404).json({ erro: 'Denúncia não encontrada.' });
+  }
+
+  const texto = String((req.body || {}).texto || '').trim();
+
+  if (!texto) {
+    return res.status(400).json({ erro: 'O comentário não pode ficar vazio.' });
+  }
+
+  const usuario = db.get().usuarios.find((u) => u.id === req.usuario.id);
+
+  if (!usuario) {
+    return res.status(401).json({ erro: 'Usuário não encontrado.' });
+  }
+
+  const comentario = {
+    id: db.proximoId('comentarios'),
+    denunciaId: denuncia.id,
+    usuarioId: usuario.id,
+    nome: usuario.nome,
+    texto: texto.slice(0, 500),
+    criadoEm: new Date().toISOString()
+  };
+
+  db.get().comentarios.push(comentario);
+  db.salvar();
+
+  req.app.get('io')?.emit('denuncia:novo-comentario', comentarioPublico(comentario));
+
+  res.status(201).json(comentarioPublico(comentario));
 });
 
 module.exports = router;
