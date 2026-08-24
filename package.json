@@ -1,0 +1,29 @@
+{
+  "name": "cidadeviva",
+  "version": "1.0.0",
+  "description": "Plataforma colaborativa para denunciar problemas ambientais urbanos: descarte irregular de lixo, vazamentos de água, queimadas e desmatamento.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "seed": "node backend/seed.js"
+  },
+  "keywords": [
+    "meio-ambiente",
+    "denuncias",
+    "cidade",
+    "sustentabilidade"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.2.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}
