@@ -1,70 +1,1086 @@
+
+
+Pular para o conteúdo
+Como usar o Gmail com leitores de tela
+1 de 338
+Site banco de dados
+Caixa de entrada
+Carlos Eduardo Felix Pereira
+	
+16:16 (há 5 minutos)
+	
+	
+para mim
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CidadeViva</title>
-  <link rel="stylesheet" href="/css/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CidadeViva</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --verde: #16834b;
+    --verde-escuro: #0d5c35;
+    --verde-claro: #e9f8ef;
+    --fundo: #f4f8f5;
+    --branco: #ffffff;
+    --texto: #173322;
+    --cinza: #66756d;
+    --vermelho: #d93434;
+    --borda: #dce8df;
+    --sombra: 0 8px 25px rgba(20, 70, 40, .10);
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.oculto {
+    display: none !important;
+}
+
+/* =========================
+   LOGIN / CADASTRO
+========================= */
+
+#autenticacao {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background:
+        linear-gradient(rgba(5, 70, 35, .70), rgba(5, 70, 35, .70)),
+        url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1600&q=80")
+        center/cover;
+}
+
+.auth-caixa {
+    width: 100%;
+    max-width: 470px;
+    background: rgba(255,255,255,.97);
+    padding: 35px;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.auth-logo {
+    font-size: 55px;
+    text-align: center;
+}
+
+.auth-caixa h1 {
+    text-align: center;
+    font-size: 34px;
+    color: var(--verde-escuro);
+}
+
+.auth-slogan {
+    text-align: center;
+    color: var(--cinza);
+    margin: 8px 0 25px;
+}
+
+.abas {
+    display: flex;
+    background: #eef4f0;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.aba {
+    flex: 1;
+    border: 0;
+    padding: 12px;
+    background: transparent;
+    border-radius: 9px;
+    font-weight: bold;
+    color: var(--cinza);
+}
+
+.aba.ativa {
+    background: white;
+    color: var(--verde);
+    box-shadow: var(--sombra);
+}
+
+.form-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    margin-top: 7px;
+    padding: 13px;
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+    outline: none;
+    background: white;
+    color: var(--texto);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px rgba(22,131,75,.12);
+}
+
+.botao-principal {
+    border: 0;
+    background: var(--verde);
+    color: white;
+    padding: 14px;
+    border-radius: 11px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.botao-principal:hover {
+    background: var(--verde-escuro);
+    transform: translateY(-1px);
+}
+
+.mensagem {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    display: none;
+}
+
+.mensagem.sucesso {
+    display: block;
+    background: #e7f8ed;
+    color: #176536;
+}
+
+.mensagem.erro {
+    display: block;
+    background: #fdeaea;
+    color: #a52323;
+}
+
+/* =========================
+   APLICATIVO
+========================= */
+
+.aplicativo {
+    min-height: 100vh;
+    padding-bottom: 90px;
+}
+
+.topo {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid var(--borda);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.topo h1 {
+    color: var(--verde-escuro);
+    font-size: 24px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--verde);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+}
+
+.hero {
+    min-height: 330px;
+    border-radius: 25px;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    color: white;
+    background:
+        linear-gradient(90deg, rgba(5,70,35,.90), rgba(5,70,35,.35)),
+        url("https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1500&q=80")
+        center/cover;
+    box-shadow: var(--sombra);
+}
+
+.hero h2 {
+    font-size: 40px;
+    max-width: 650px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 18px;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.botoes-hero {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.botao-branco {
+    background: white;
+    color: var(--verde-escuro);
+    border: 0;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.botao-transparente {
+    background: rgba(255,255,255,.15);
+    border: 1px solid white;
+    color: white;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.titulo-secao {
+    margin: 30px 0 15px;
+    font-size: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--borda);
+}
+
+.card h3 {
+    margin: 10px 0;
+}
+
+.card p {
+    color: var(--cinza);
+    line-height: 1.5;
+}
+
+.icone-grande {
+    font-size: 35px;
+}
+
+.estatisticas {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.numero {
+    font-size: 32px;
+    color: var(--verde);
+    font-weight: bold;
+}
+
+/* =========================
+   DENÚNCIA
+========================= */
+
+.formulario {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: var(--sombra);
+}
+
+.formulario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.formulario .campo-grande {
+    grid-column: 1 / -1;
+}
+
+.upload-area {
+    border: 2px dashed #a9cdb5;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 10px;
+    background: var(--verde-claro);
+}
+
+.preview {
+    max-width: 100%;
+    max-height: 300px;
+    margin-top: 15px;
+    border-radius: 15px;
+    display: none;
+}
+
+/* =========================
+   NOTÍCIAS
+========================= */
+
+.noticia {
+    overflow: hidden;
+    padding: 0;
+}
+
+.noticia img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.noticia-conteudo {
+    padding: 20px;
+}
+
+/* =========================
+   ÓRGÃOS
+========================= */
+
+.orgao {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.orgao-icone {
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    background: var(--verde-claro);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 27px;
+    flex-shrink: 0;
+}
+
+.numero-telefone {
+    display: block;
+    color: var(--verde);
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+}
+
+.chat-mensagens {
+    height: 400px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.mensagem-chat {
+    background: var(--verde-claro);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    max-width: 80%;
+}
+
+.mensagem-chat strong {
+    display: block;
+    color: var(--verde-escuro);
+}
+
+.chat-form {
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid var(--borda);
+}
+
+.chat-form input {
+    margin: 0;
+}
+
+/* =========================
+   PERFIL
+========================= */
+
+.perfil {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--sombra);
+}
+
+.avatar-grande {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--verde);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.botao-perigo {
+    background: var(--vermelho);
+    color: white;
+    border: 0;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 75px;
+    background: white;
+    border-top: 1px solid var(--borda);
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 100;
+}
+
+.menu button {
+    border: 0;
+    background: transparent;
+    color: var(--cinza);
+    min-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 18px;
+}
+
+.menu button span {
+    font-size: 12px;
+}
+
+.menu button.ativo {
+    color: var(--verde);
+    font-weight: bold;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    right: 20px;
+    bottom: 95px;
+    background: #173322;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px;
+    box-shadow: var(--sombra);
+    display: none;
+    z-index: 200;
+}
+
+.toast.mostrar {
+    display: block;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width: 800px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .estatisticas {
+        grid-template-columns: 1fr;
+    }
+
+    .formulario-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formulario .campo-grande {
+        grid-column: auto;
+    }
+
+    .hero {
+        padding: 25px;
+    }
+
+    .hero h2 {
+        font-size: 30px;
+    }
+
+    .menu {
+        justify-content: space-around;
+        gap: 0;
+    }
+
+    .menu button {
+        min-width: auto;
+        flex: 1;
+    }
+}
+
+@media(max-width: 500px) {
+    .auth-caixa {
+        padding: 25px 18px;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    .topo {
+        padding: 0 15px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-  <div id="autenticacao" class="tela-auth oculto">
+<!-- =========================
+     AUTENTICAÇÃO
+========================= -->
+
+<section id="autenticacao">
+
     <div class="auth-caixa">
-      <div class="auth-logo">🌿</div>
-      <h1>CidadeViva</h1>
-      <p class="auth-slogan">Sua cidade mais limpa e sustentável</p>
 
-      <div class="abas">
-        <button id="abaEntrar" class="aba ativa" type="button">Entrar</button>
-        <button id="abaCriar" class="aba" type="button">Criar conta</button>
-      </div>
+        <div class="auth-logo">🌿</div>
 
-      <form id="formLogin" class="form-auth">
-        <label>E-mail
-          <input type="email" name="email" placeholder="voce@email.com" required autocomplete="email">
-        </label>
-        <label>Senha
-          <input type="password" name="senha" placeholder="••••••" required minlength="6" autocomplete="current-password">
-        </label>
-        <button type="submit" class="botao-principal">Entrar</button>
-      </form>
+        <h1>CidadeViva</h1>
 
-      <form id="formRegistro" class="form-auth oculto">
-        <label>Nome completo
-          <input type="text" name="nome" placeholder="Seu nome" required autocomplete="name">
-        </label>
-        <label>E-mail
-          <input type="email" name="email" placeholder="voce@email.com" required autocomplete="email">
-        </label>
-        <label>Senha (mínimo 6 caracteres)
-          <input type="password" name="senha" placeholder="••••••" required minlength="6" autocomplete="new-password">
-        </label>
-        <button type="submit" class="botao-principal">Criar minha conta</button>
-      </form>
+        <p class="auth-slogan" data-i18n="slogan">
+            Sua cidade mais limpa e sustentável
+        </p>
 
-      <p id="mensagemAuth" class="mensagem-erro"></p>
+        <div style="margin-bottom:15px;">
+            <select id="idiomaAuth" onchange="mudarIdioma(this.value)">
+                <option value="pt">🇧🇷 Português</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+            </select>
+        </div>
+
+        <div class="abas">
+            <button id="abaEntrar" class="aba ativa" onclick="mostrarLogin()">
+                Entrar
+            </button>
+
+            <button id="abaCriar" class="aba" onclick="mostrarCadastro()">
+                Criar conta
+            </button>
+        </div>
+
+        <!-- LOGIN -->
+
+        <form id="formLogin" class="form-auth">
+
+            <label>
+                E-mail
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="voce@email.com"
+                    required
+                >
+            </label>
+
+            <label>
+                Senha
+                <input
+                    id="loginSenha"
+                    type="password"
+                    placeholder="••••••"
+                    required
+                >
+            </label>
+
+            <button class="botao-principal" type="submit">
+                Entrar
+            </button>
+
+        </form>
+
+        <!-- CADASTRO -->
+
+        <form id="formCadastro" class="form-auth oculto">
+
+            <label>
+                Nome completo
+                <input
+                    id="cadNome"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    required
+                >
+            </label>
+
+            <label>
+                Número de celular
+                <input
+                    id="cadCelular"
+                    type="tel"
+                    placeholder="(00) 00000-0000"
+                    required
+                >
+            </label>
+
+            <label>
+                Nome de usuário
+                <input
+                    id="cadUsuario"
+                    type="text"
+                    placeholder="@seuusuario"
+                    required
+                >
+            </label>
+
+            <label>
+                E-mail
+                <input
+                    id="cadEmail"
+                    type="email"
+                    placeholder="voce@email.com"
+                    required
+                >
+            </label>
+
+            <label>
+                Senha
+                <input
+                    id="cadSenha"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    minlength="6"
+                    required
+                >
+            </label>
+
+            <button class="botao-principal" type="submit">
+                Criar minha conta
+            </button>
+
+        </form>
+
+        <div id="mensagemAuth" class="mensagem"></div>
+
     </div>
-  </div>
 
-  <div id="aplicativo" class="aplicativo oculto">
+</section>
+
+
+<!-- =========================
+     APLICATIVO
+========================= -->
+
+<section id="aplicativo" class="aplicativo oculto">
+
     <header class="topo">
-      <h1>CidadeViva</h1>
-      <button id="avatarTopo" class="avatar" type="button" title="Meu perfil"></button>
+
+        <h1>🌿 CidadeViva</h1>
+
+        <button
+            id="avatarTopo"
+            class="avatar"
+            onclick="navegar('#/perfil')"
+            title="Meu perfil">
+            CV
+        </button>
+
     </header>
 
     <main id="conteudo"></main>
 
     <nav class="menu">
-      <button data-rota="#/inicio" type="button">🏠<span>Início</span></button>
-      <button data-rota="#/denunciar" type="button">📸<span>Denunciar</span></button>
-      <button data-rota="#/noticias" type="button">📰<span>Notícias</span></button>
-      <button data-rota="#/chat" type="button">💬<span>Chat</span></button>
-      <button data-rota="#/perfil" type="button">👤<span>Perfil</span></button>
-    </nav>
-  </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/api.js"></script>
-  <script src="/js/app.js"></script>
-</body>
-</html>
+        <button data-rota="#/inicio" onclick="navegar('#/inicio')">
+            🏠
+            <span data-i18n="inicio">Início</span>
+        </button>
+
+        <button data-rota="#/denunciar" onclick="navegar('#/denunciar')">
+            📸
+            <span data-i18n="denunciar">Denunciar</span>
+        </button>
+
+        <button data-rota="#/noticias" onclick="navegar('#/noticias')">
+            📰
+            <span data-i18n="noticias">Notícias</span>
+        </button>
+
+        <button data-rota="#/chat" onclick="navegar('#/chat')">
+            💬
+            <span data-i18n="chat">Chat</span>
+        </button>
+
+        <button data-rota="#/perfil" onclick="navegar('#/perfil')">
+            👤
+            <span data-i18n="perfil">Perfil</span>
+        </button>
+
+    </nav>
+
+</section>
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/* =====================================================
+   IDIOMAS
+===================================================== */
+
+const traducoes = {
+
+    pt: {
+        slogan: "Sua cidade mais limpa e sustentável",
+        inicio: "Início",
+        denunciar: "Denunciar",
+        noticias: "Notícias",
+        chat: "Chat",
+        perfil: "Perfil"
+    },
+
+    en: {
+        slogan: "Your city cleaner and more sustainable",
+        inicio: "Home",
+        denunciar: "Report",
+        noticias: "News",
+        chat: "Chat",
+        perfil: "Profile"
+    },
+
+    es: {
+        slogan: "Tu ciudad más limpia y sostenible",
+        inicio: "Inicio",
+        denunciar: "Denunciar",
+        noticias: "Noticias",
+        chat: "Chat",
+        perfil: "Perfil"
+    },
+
+    fr: {
+        slogan: "Votre ville plus propre et durable",
+        inicio: "Accueil",
+        denunciar: "Signaler",
+        noticias: "Actualités",
+        chat: "Chat",
+        perfil: "Profil"
+    }
+
+};
+
+let idiomaAtual =
+    localStorage.getItem("cidadeviva_idioma") || "pt";
+
+function mudarIdioma(idioma) {
+
+    idiomaAtual = idioma;
+
+    localStorage.setItem(
+        "cidadeviva_idioma",
+        idioma
+    );
+
+    document.querySelectorAll("[data-i18n]")
+        .forEach(elemento => {
+
+            const chave =
+                elemento.getAttribute("data-i18n");
+
+            if (traducoes[idioma][chave]) {
+                elemento.textContent =
+                    traducoes[idioma][chave];
+            }
+
+        });
+
+    const seletor =
+        document.getElementById("idiomaAuth");
+
+    if (seletor) {
+        seletor.value = idioma;
+    }
+}
+
+
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function toast(texto) {
+
+    const elemento =
+        document.getElementById("toast");
+
+    elemento.textContent = texto;
+
+    elemento.classList.add("mostrar");
+
+    setTimeout(() => {
+        elemento.classList.remove("mostrar");
+    }, 3000);
+}
+
+function escapar(texto) {
+
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function obterUsuario() {
+
+    return JSON.parse(
+        localStorage.getItem("cidadeviva_usuario") || "null"
+    );
+}
+
+
+/* =====================================================
+   AUTENTICAÇÃO
+===================================================== */
+
+function mostrarLogin() {
+
+    document
+        .getElementById("formLogin")
+        .classList.remove("oculto");
+
+    document
+        .getElementById("formCadastro")
+        .classList.add("oculto");
+
+    document
+        .getElementById("abaEntrar")
+        .classList.add("ativa");
+
+    document
+        .getElementById("abaCriar")
+        .classList.remove("ativa");
+
+    limparMensagem();
+}
+
+function mostrarCadastro() {
+
+    document
+        .getElementById("formLogin")
+        .classList.add("oculto");
+
+    document
+        .getElementById("formCadastro")
+        .classList.remove("oculto");
+
+    document
+        .getElementById("abaEntrar")
+        .classList.remove("ativa");
+
+    document
+        .getElementById("abaCriar")
+        .classList.add("ativa");
+
+    limparMensagem();
+}
+
+function mostrarMensagem(texto, tipo) {
+
+    const elemento =
+        document.getElementById("mensagemAuth");
+
+    elemento.textContent = texto;
+
+    elemento.className =
+        "mensagem " + tipo;
+}
+
+function limparMensagem() {
+
+    const elemento =
+        document.getElementById("mensagemAuth");
+
+    elemento.textContent = "";
+
+    elemento.className = "mensagem";
+}
+
+
+/* =========================
+   CADASTRO
+========================= */
+
+document
+    .getElementById("formCadastro")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const usuario = {
+
+            nome:
+                document.getElementById("cadNome").value.trim(),
+
+            celular:
+                document.getElementById("cadCelular").value.trim(),
+
+            username:
+                document.getElementById("cadUsuario").value.trim(),
+
+            email:
+                document.getElementById("cadEmail").value.trim(),
+
+            senha:
+                document.getElementById("cadSenha").value
+
+        };
+
+        if (usuario.senha.length < 6) {
+
+            mostrarMensagem(
+                "A senha precisa ter pelo menos 6 caracteres.",
+                "erro"
+            );
+
+            return;
+        }
+
+        const usuarios =
+            JSON.parse(
+                localStorage.getItem("cidadeviva_usuarios") || "[]"
+            );
+
+        const existe =
+            usuarios.some(
+                u =>
+                    u.email.toLowerCase() ===
+                    usuario.email.toLowerCase()
+            );
+
+        if (existe) {
+
+            mostrarMensagem(
+                "Este e-mail já está cadastrado.",
+                "erro"
+            );
+
+            return;
+        }
+
+        usuarios.push(usuario);
+
+        localStorage.setItem(
+            "cidadeviva_usuarios",
+            JSON.stringify(usuarios)
+        );
+
+        localStorage.setItem(
+            "cidadeviva_usuario",
+            JSON.stringify(usuario)
+        );
+
+        mostrarMensagem(
+            "Conta criada com sucesso!",
+            "sucesso"
+        );
+
+        setTimeout(abrirAplicativo, 800);
+
+    });
+
+
+/* =========================
+   LOGIN
+========================= */
+
+document
+    .getElementById("formLogin")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const email =
+   
+
+AVISO LEGAL - Esta mensagem é destinada exclusivamente para a(s) pessoa(s) a quem é dirigida, podendo conter informação confidencial e/ou legalmente privilegiada. Se você não for o destinatário desta mensagem, desde já fica notificado de abster-se a divulgar, copiar, distribuir, examinar ou, de qualquer forma, utilizar a informação contida nesta mensagem, por ser ilegal. Caso você tenha recebido esta mensagem por engano, pedimos que nos retorne este e-mail, promovendo, desde logo, a eliminação do seu conteúdo em sua base de dados, registros ou sistema de controle.
+
